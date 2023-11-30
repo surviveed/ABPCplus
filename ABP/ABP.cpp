@@ -20,7 +20,7 @@ struct Letra {
 typedef struct Letra Letra;
 
 struct MaiorOcorrencia {
-    Palavra *palavra; 
+    Palavra* palavra;
     struct MaiorOcorrencia* prox, * ant;
 };
 typedef struct MaiorOcorrencia MaiorOcorrencia;
@@ -38,13 +38,13 @@ int maior = 0;
 void preOrdem(Palavra* a, bool ocorrencias, bool recalculoOcorrencias, bool checaMaiorOcorrencia) {
     if (a != nullptr) {
         if (ocorrencias) {
-            if (a->ocorrencias == 1) 
+            if (a->ocorrencias == 1)
                 std::cout << a->texto << std::endl;
 
             preOrdem(a->esq, true, false, false);
             preOrdem(a->dir, true, false, false);
         }
-        else if(!ocorrencias && !recalculoOcorrencias && !checaMaiorOcorrencia){
+        else if (!ocorrencias && !recalculoOcorrencias && !checaMaiorOcorrencia) {
             std::cout << a->texto << std::endl;
             preOrdem(a->esq, false, false, false);
             preOrdem(a->dir, false, false, false);
@@ -59,16 +59,16 @@ void preOrdem(Palavra* a, bool ocorrencias, bool recalculoOcorrencias, bool chec
         }
         else if (checaMaiorOcorrencia) {
             if (a->ocorrencias == maior) {
-                MaiorOcorrencia *novoNodo = new MaiorOcorrencia;
-                novoNodo->palavra = a; 
+                MaiorOcorrencia* novoNodo = new MaiorOcorrencia;
+                novoNodo->palavra = a;
                 novoNodo->prox = nullptr;
                 novoNodo->ant = nullptr;
                 if (header.maiorOcorrencia == nullptr) {
-                    header.maiorOcorrencia = novoNodo; 
+                    header.maiorOcorrencia = novoNodo;
                 }
                 else {
                     MaiorOcorrencia* aux = header.maiorOcorrencia;
-                    
+
                     while (aux->prox != nullptr) {
                         aux = aux->prox;
                     }
@@ -81,6 +81,14 @@ void preOrdem(Palavra* a, bool ocorrencias, bool recalculoOcorrencias, bool chec
     }
 }
 
+void posOrdem(Palavra* a) {
+    if (a != nullptr) {
+        posOrdem(a->esq);
+        posOrdem(a->dir);
+        std::cout << a->texto << std::endl;
+    }
+}
+
 Palavra* insere(Palavra* noAnterior, Palavra* no, const std::string& palavra, Letra* letra) {
     if (no == nullptr) {
         no = new Palavra;
@@ -90,8 +98,8 @@ Palavra* insere(Palavra* noAnterior, Palavra* no, const std::string& palavra, Le
         no->pai = noAnterior;
         no->ocorrencias = 1;
         std::cout << "Palavra Inserida" << std::endl;
-        header.numeroPalavras++; 
-        letra->qtdPalavras++; 
+        header.numeroPalavras++;
+        letra->qtdPalavras++;
         return no;
     }
     else {
@@ -101,24 +109,24 @@ Palavra* insere(Palavra* noAnterior, Palavra* no, const std::string& palavra, Le
             no->dir = insere(no, no->dir, palavra, letra);
         else if (res < 0)
             no->esq = insere(no, no->esq, palavra, letra);
-        else if(res==0){
+        else if (res == 0) {
             no->ocorrencias++;
             MaiorOcorrencia* novoNodo = new MaiorOcorrencia;
-            novoNodo->prox = nullptr; 
-            novoNodo->ant = nullptr; 
+            novoNodo->prox = nullptr;
+            novoNodo->ant = nullptr;
             novoNodo->palavra = no;
             if (header.maiorOcorrencia != nullptr) {
                 MaiorOcorrencia* aux = header.maiorOcorrencia;
-                MaiorOcorrencia *aux2 = header.maiorOcorrencia;
+                MaiorOcorrencia* aux2 = header.maiorOcorrencia;
                 if ((no->ocorrencias) > ((aux->palavra)->ocorrencias)) {
                     while (aux != nullptr) {
-                        aux2 = aux->prox; 
-                        delete aux; 
-                        aux = aux2; 
+                        aux2 = aux->prox;
+                        delete aux;
+                        aux = aux2;
                     }
                     header.maiorOcorrencia = novoNodo;
                 }
-                else if ((no->ocorrencias) == ((aux->palavra)->ocorrencias) && no!=aux->palavra) {
+                else if ((no->ocorrencias) == ((aux->palavra)->ocorrencias) && no != aux->palavra) {
                     while (aux->prox != nullptr) {
                         aux = aux->prox;
                     }
@@ -133,7 +141,7 @@ Palavra* insere(Palavra* noAnterior, Palavra* no, const std::string& palavra, Le
         }
         return no;
     }
-    
+
     header.totalOcorrencias++;
 }
 
@@ -156,7 +164,7 @@ void InserirPalavra() {
                 insere(nullptr, aux->raiz, palavra, aux);
             break;
         }
-        else 
+        else
             aux = aux->prox;
     }
 
@@ -166,11 +174,11 @@ void InserirPalavra() {
         if (header.inicio != nullptr) {
             aux = header.inicio;
             while (aux != nullptr) {
-                if (letra > aux->letra){
+                if (letra > aux->letra) {
                     if (aux->prox == nullptr) {
                         //insere no fim 
                         novaLetra->prox = nullptr;
-                        novaLetra->ant = aux; 
+                        novaLetra->ant = aux;
                         header.fim = novaLetra;
                         aux->prox = novaLetra;
                         break;
@@ -192,7 +200,7 @@ void InserirPalavra() {
             }
         }
         else {
-            novaLetra->ant = nullptr; 
+            novaLetra->ant = nullptr;
             novaLetra->prox = nullptr;
             header.inicio = novaLetra;
             header.fim = novaLetra;
@@ -210,7 +218,7 @@ Palavra* busca(Palavra* no, const std::string& palavraDigitada) {
     Palavra* aux = no;
     while (aux != nullptr) {
         int res = palavraDigitada.compare(aux->texto);
-        if (res == 0) 
+        if (res == 0)
             return aux;
         else if (res > 0)
             aux = aux->dir;
@@ -266,13 +274,13 @@ void RemovePalavra() {
         std::string palavra;
         std::cout << "Digite a palavra que deseja remover: ";
         std::cin >> palavra;
-        
+
         transform(palavra.begin(), palavra.end(), palavra.begin(), ::toupper);
 
         char letra = toupper(palavra[0]);
 
 
-        Letra* procuraLetra = header.inicio; 
+        Letra* procuraLetra = header.inicio;
 
         while (procuraLetra != nullptr) {
             if (procuraLetra->letra == letra)
@@ -283,7 +291,7 @@ void RemovePalavra() {
         if (procuraLetra == nullptr)
             std::cout << "Nenhuma palavra inserida com a letra " << letra << std::endl;
         else {
-            Palavra* palavraBuscada =busca(procuraLetra->raiz, palavra) ;
+            Palavra* palavraBuscada = busca(procuraLetra->raiz, palavra);
             if (palavraBuscada == nullptr)
                 std::cout << "Palavra nao encontrada para remover" << std::endl;
             else {
@@ -293,22 +301,22 @@ void RemovePalavra() {
                         if (header.maiorOcorrencia->prox == nullptr) {
                             delete header.maiorOcorrencia;
                             header.maiorOcorrencia = nullptr;
-                            maior = 0; 
+                            maior = 0;
                         }
                         else {
                             MaiorOcorrencia* aux = header.maiorOcorrencia;
-                            (aux->prox)->ant = nullptr; 
+                            (aux->prox)->ant = nullptr;
                             header.maiorOcorrencia = aux->prox;
                             delete aux;
                         }
                     }
                     else {
-                        MaiorOcorrencia* aux = header.maiorOcorrencia; 
+                        MaiorOcorrencia* aux = header.maiorOcorrencia;
                         while (aux != nullptr) {
                             if (aux->palavra == palavraBuscada) {
                                 if (aux->prox == nullptr) {
-                                    (aux->ant)->prox = nullptr; 
-                                    delete aux; 
+                                    (aux->ant)->prox = nullptr;
+                                    delete aux;
                                 }
                                 else {
                                     (aux->ant)->prox = aux->prox;
@@ -319,7 +327,7 @@ void RemovePalavra() {
                                 }
                                 break;
                             }
-                            aux = aux->prox; 
+                            aux = aux->prox;
                         }
                     }
                 }
@@ -341,7 +349,7 @@ void RemovePalavra() {
                             (procuraLetra->prox)->ant = nullptr;
                             header.inicio = procuraLetra->prox;
                         }
-                        else if (procuraLetra->prox==nullptr && procuraLetra->ant!=nullptr) {
+                        else if (procuraLetra->prox == nullptr && procuraLetra->ant != nullptr) {
                             (procuraLetra->ant)->prox = nullptr;
                             header.fim = procuraLetra->ant;
                         }
@@ -352,7 +360,7 @@ void RemovePalavra() {
                         delete procuraLetra;
                         procuraLetra = nullptr;
                     }
-                        // Se não há pai, significa que é o nó raiz
+                    // Se não há pai, significa que é o nó raiz
 
                     delete palavraBuscada; // mesma coisa que o free aparentemente
 
@@ -366,9 +374,9 @@ void RemovePalavra() {
                             else
                                 (palavraBuscada->pai)->dir = palavraBuscada->esq;
                         }
-                        else 
+                        else
                             //se cair aqui é pq é raiz 
-                            procuraLetra->raiz = palavraBuscada->esq; 
+                            procuraLetra->raiz = palavraBuscada->esq;
 
                         (palavraBuscada->esq)->pai = palavraBuscada->pai;
                     }
@@ -379,25 +387,25 @@ void RemovePalavra() {
                             else
                                 (palavraBuscada->pai)->dir = palavraBuscada->dir;
                         }
-                        else 
+                        else
                             //se cair aqui é pq é raiz 
                             procuraLetra->raiz = palavraBuscada->dir;
-                        
+
 
                         (palavraBuscada->dir)->pai = palavraBuscada->pai;
 
                     }
-                    
-                    delete palavraBuscada; 
+
+                    delete palavraBuscada;
 
                     std::cout << "Palavra removida no caso de 1 subarvore" << std::endl;
                 }
                 else if (palavraBuscada->esq != nullptr && palavraBuscada->dir != nullptr) {
-                   
+
                     Palavra* maiorEsquerda = palavraBuscada->esq;
 
                     while (maiorEsquerda->dir != nullptr) {
-                        maiorEsquerda = maiorEsquerda->dir; 
+                        maiorEsquerda = maiorEsquerda->dir;
                     }
                     (maiorEsquerda->pai)->esq = maiorEsquerda->esq;
                     maiorEsquerda->pai = palavraBuscada->pai;
@@ -412,14 +420,14 @@ void RemovePalavra() {
                     }
                     else
                         // Se não há pai, significa que é o nó raiz
-                        procuraLetra->raiz= maiorEsquerda;
+                        procuraLetra->raiz = maiorEsquerda;
 
-                    delete palavraBuscada; 
+                    delete palavraBuscada;
 
                     std::cout << "Palavra removida no caso de 2 subarvores" << std::endl;
                 }
                 header.numeroPalavras--;
-                if(procuraLetra!=nullptr)
+                if (procuraLetra != nullptr)
                     procuraLetra->qtdPalavras--;
             }
         }
@@ -445,7 +453,7 @@ void centralEsquerda(Palavra* a) {
 
 void centralDireita(Palavra* a) {
     if (a != nullptr) {
-        centralDireita(a->dir); 
+        centralDireita(a->dir);
         std::cout << a->texto << std::endl;
         centralDireita(a->esq);
     }
@@ -503,7 +511,7 @@ void ExibirListaPalavrasPorLetra() {
         }
 
         if (procuraLetra != nullptr) {
-            int opcao=0;
+            int opcao = 0;
             while (opcao != 1 && opcao != 2) {
                 std::cout << "Deseja exibir em que ordem?\n";
                 std::cout << "1) A-Z\n";
@@ -552,7 +560,7 @@ void ConsultarPalavraComMaiorNumeroDeOcorrencia() {
                     preOrdem(procuraLetra->raiz, false, false, true);
                     procuraLetra = procuraLetra->prox;
                 }
-                if (header.maiorOcorrencia != nullptr) 
+                if (header.maiorOcorrencia != nullptr)
                     ConsultarPalavraComMaiorNumeroDeOcorrencia();
                 else
                     std::cout << "Nenhuma palavra com mais de uma ocorrencia inserida" << std::endl;
@@ -565,13 +573,13 @@ void ConsultarPalavraComMaiorNumeroDeOcorrencia() {
 }
 
 void ConsultarPalavraComUmaOcorrencia() {
-    if (header.inicio==nullptr)
+    if (header.inicio == nullptr)
         std::cout << "Nenhuma palavra inserida" << std::endl;
     else {
         Letra* letra = header.inicio;
         while (letra != nullptr) {
-            preOrdem(letra->raiz, true, false, false); 
-            letra = letra->prox; 
+            preOrdem(letra->raiz, true, false, false);
+            letra = letra->prox;
         }
     }
 }
@@ -585,7 +593,7 @@ void ArvorePreFixada() {
             procuraLetra = procuraLetra->prox;
         }
     }
-    else 
+    else
         std::cout << "Nenhuma palavra inserida" << std::endl;
 }
 
@@ -594,7 +602,7 @@ void ArvorePosFixada() {
         Letra* procuraLetra = header.inicio;
         while (procuraLetra != nullptr) {
             std::cout << "LETRA " << procuraLetra->letra << std::endl;
-            //posOrdem(procuraLetra->raiz);
+            posOrdem(procuraLetra->raiz);
             procuraLetra = procuraLetra->prox;
         }
     }
@@ -634,7 +642,7 @@ void TotalPalavrasPorLetra() {
     if (header.inicio != nullptr) {
         Letra* procuraLetra = header.inicio;
         while (procuraLetra != nullptr) {
-            std::cout << "LETRA " << procuraLetra->letra << " TOTAL DE PALAVRAS -> "<< procuraLetra->qtdPalavras<<std::endl;
+            std::cout << "LETRA " << procuraLetra->letra << " TOTAL DE PALAVRAS -> " << procuraLetra->qtdPalavras << std::endl;
             procuraLetra = procuraLetra->prox;
         }
     }
@@ -677,7 +685,7 @@ void menu() {
         break;
     case 3:
         RemovePalavra();  // Certifique-se de que a função RemovePalavra() esteja definida
-        break;      
+        break;
     case 4:
         ConsultaNumeroPalavras();  // Certifique-se de que a função ConsultaNumeroPalavras() esteja definida
         break;
@@ -727,4 +735,3 @@ int main() {
     menu();
     return 0;
 }
-
